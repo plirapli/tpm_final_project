@@ -1,7 +1,7 @@
 import 'package:accordion/accordion.dart';
 import 'package:accordion/controllers.dart';
 import 'package:flutter/material.dart';
-import 'package:tpm_final_project/views/testimonial/content.dart';
+import 'package:tpm_final_project/views/profile/testimonial/content.dart';
 
 /// Main example page
 class HelpPage extends StatelessWidget {

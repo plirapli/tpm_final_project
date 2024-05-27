@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tpm_final_project/auth/session.dart';
 import 'package:tpm_final_project/views/auth/login.dart';
-import 'package:tpm_final_project/views/testimonial/help.dart';
+import 'package:tpm_final_project/views/profile/about_me.dart';
+import 'package:tpm_final_project/views/profile/testimonial/help.dart';
 
 class ProfilePage extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -54,7 +55,7 @@ class ProfilePage extends StatelessWidget {
   void _aboutHandler(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const HelpPage()),
+      MaterialPageRoute(builder: (context) => const AboutMePage()),
     );
   }
 

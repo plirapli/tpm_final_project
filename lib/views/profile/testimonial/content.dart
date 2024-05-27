@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tpm_final_project/views/testimonial/component.dart';
+import 'package:tpm_final_project/views/profile/testimonial/component.dart';
 
 class GetStartedContent extends StatelessWidget {
   const GetStartedContent({super.key});
