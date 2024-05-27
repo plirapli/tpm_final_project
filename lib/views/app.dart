@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:tpm_final_project/models/app_menu.dart';
+import 'package:tpm_final_project/theme.dart';
+import 'package:tpm_final_project/views/menu/home.dart';
 import 'package:tpm_final_project/views/menu/profile.dart';
 
 class AppPage extends StatefulWidget {
@@ -15,7 +17,8 @@ class _AppPageState extends State<AppPage> {
   int _selectedIndex = 0;
   List<Widget> _widgetOptions(String token) {
     return [
-      const HomePage(),
+      HomePage(data: JwtDecoder.decode(token)),
+      HomePage(data: JwtDecoder.decode(token)),
       ProfilePage(data: JwtDecoder.decode(token)),
     ];
   }
@@ -27,7 +30,7 @@ class _AppPageState extends State<AppPage> {
         appBar: AppBar(title: Text(navItem[_selectedIndex].label!)),
         body: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          color: const Color.fromARGB(255, 246, 246, 246),
+          color: MyTheme.bg,
           child: _widgetOptions(widget.token).elementAt(_selectedIndex),
         ),
         bottomNavigationBar: BottomNavigationBar(

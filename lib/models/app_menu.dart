@@ -14,8 +14,8 @@ List<BottomNavigationBarItem> navItem = <BottomNavigationBarItem>[
     label: 'Home',
   ),
   const BottomNavigationBarItem(
-    icon: Icon(Icons.timer_rounded),
-    label: 'Stopwatch',
+    icon: Icon(Icons.layers),
+    label: 'Category',
   ),
   const BottomNavigationBarItem(
     icon: Icon(Icons.person),

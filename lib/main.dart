@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Armageddon',
-      theme: themeData(),
+      theme: MyTheme.myTheme(),
       home: FutureBuilder<String?>(
         future: SessionManager.getCredential(),
         builder: (context, snapshot) {
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            // FlutterNativeSplash.remove();
+            FlutterNativeSplash.remove();
             String? token = snapshot.data;
             if (token != null) {
               return AppPage(token: token);

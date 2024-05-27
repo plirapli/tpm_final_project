@@ -21,17 +21,17 @@ class ProfilePage extends StatelessWidget {
         ),
         const SizedBox(height: 2),
         Text("@${data["username"]}", style: const TextStyle(fontSize: 16)),
-        const SizedBox(height: 20),
+        const SizedBox(height: 8),
+        const Divider(),
+        const SizedBox(height: 8),
         TextButton(
           onPressed: () => _helpHandler(context),
           child: const Text("Testimonial"),
         ),
-        const SizedBox(height: 4),
         TextButton(
           onPressed: () => _aboutHandler(context),
           child: const Text("About Us"),
         ),
-        const SizedBox(height: 4),
         TextButton(
           style: TextButton.styleFrom(
             backgroundColor: Colors.black12,

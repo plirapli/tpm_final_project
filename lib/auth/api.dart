@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Auth {
-  static const _url = "http://localhost:5001/auth";
+  static const _url = "http://localhost:3002/auth";
   static const _header = <String, String>{
     'Content-Type': 'application/json; charset=UTF-8'
   };

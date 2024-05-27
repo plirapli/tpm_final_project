@@ -15,9 +15,10 @@ class Heading extends StatelessWidget {
           Text(
             text,
             style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 23, 47, 39)),
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 23, 47, 39),
+            ),
           ),
           Text(
             subtext,

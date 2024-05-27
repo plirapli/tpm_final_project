@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tpm_final_project/auth/session.dart';
 import 'package:tpm_final_project/auth/api.dart';
+import 'package:tpm_final_project/theme.dart';
 import 'package:tpm_final_project/views/app.dart';
 import 'package:tpm_final_project/views/auth/register.dart';
 
