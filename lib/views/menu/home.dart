@@ -1,7 +1,6 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:tpm_final_project/components/heading.dart';
+import 'package:tpm_final_project/utils/currency.dart';
 import 'package:tpm_final_project/utils/product.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,8 +14,21 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool _isDataLoaded = false;
   int totalItems = 0;
-  int totalValue = 0;
+  double totalValueOriginal = 0;
+  double totalValue = 0;
   String maxItem = "-";
+
+  final List<String> currencies = ['IDR', 'USD', 'KRW', 'JPY', 'EUR', 'GBP'];
+  final Map<String, String> currencySymbol = {
+    "IDR": "Rp",
+    "USD": "\$",
+    "KRW": "₩",
+    "JPY": "¥",
+    "EUR": "€",
+    "GBP": "£"
+  };
+  late String dropdownValue = currencies.first;
+
   Future? _future;
 
   @override
@@ -42,7 +54,6 @@ class _HomePageState extends State<HomePage> {
           text: "Hello, ${widget.data["name"]}  👋🏻",
           subtext: "Welcome to Armageddon.",
         ),
-        // _mainmenu(context),
         const SizedBox(height: 16),
         FutureBuilder(
           future: _future,
@@ -58,30 +69,16 @@ class _HomePageState extends State<HomePage> {
                 if (isError) return _buildError(snapshot.data["message"]);
 
                 totalItems = int.parse(snapshot.data[0]["data"]);
-                totalValue = int.parse(snapshot.data[1]["data"]);
+                totalValue = double.parse(snapshot.data[1]["data"]);
                 maxItem = snapshot.data[2]["data"]["name"];
+                totalValueOriginal = totalValue;
               }
               return _overview(context);
             }
             return const Center(child: CircularProgressIndicator());
           },
         ),
-        const SizedBox(height: 20)
       ],
-    );
-  }
-
-  Widget _buildError(String msg) {
-    return Container(
-      padding: const EdgeInsets.only(top: 4),
-      child: Text(
-        msg,
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
     );
   }
 
@@ -184,16 +181,6 @@ class _HomePageState extends State<HomePage> {
     String text = "Lorem",
     String subtext = "Lorem Ipsum",
   }) {
-    const List<String> currencies = <String>[
-      'IDR',
-      'USD',
-      'KRW',
-      'JPY',
-      'EUR',
-      'GBP'
-    ];
-    String dropdownValue = currencies.first;
-
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
@@ -238,8 +225,13 @@ class _HomePageState extends State<HomePage> {
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     value: dropdownValue,
-                    onChanged: (String? value) {
-                      setState(() => dropdownValue = value!);
+                    onChanged: (String? value) async {
+                      var res = await CurrencyApi.convert(
+                        totalValueOriginal,
+                        currency: value!.toLowerCase(),
+                      );
+                      totalValue = res["data"] + 0.0;
+                      setState(() => dropdownValue = value);
                     },
                     items: currencies.map<DropdownMenuItem<String>>(
                       (String value) {
@@ -254,7 +246,7 @@ class _HomePageState extends State<HomePage> {
           ),
           const SizedBox(height: 20),
           Text(
-            text,
+            "${currencySymbol[dropdownValue]}$text",
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -270,6 +262,24 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildError(String msg) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(msg),
+        const SizedBox(height: 16),
+        TextButton(
+          onPressed: () => setState(() => _future = _loadAll()),
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.black12,
+            foregroundColor: Colors.black,
+          ),
+          child: const Text("Retry"),
+        ),
+      ],
     );
   }
 }
