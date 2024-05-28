@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:tpm_final_project/components/heading.dart';
 import 'package:tpm_final_project/utils/currency.dart';
 import 'package:tpm_final_project/utils/product.dart';
@@ -83,6 +84,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _overview(BuildContext context) {
+    NumberFormat currencyFormatter = NumberFormat.currency(
+      locale: 'id',
+      symbol: currencySymbol[dropdownValue],
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -106,7 +112,7 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(height: 16),
         _cardValue(
           context,
-          text: totalValue.toString(),
+          text: currencyFormatter.format(totalValue),
           subtext: "Total Value",
         ),
         const SizedBox(height: 16),
@@ -246,7 +252,7 @@ class _HomePageState extends State<HomePage> {
           ),
           const SizedBox(height: 20),
           Text(
-            "${currencySymbol[dropdownValue]}$text",
+            text,
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
