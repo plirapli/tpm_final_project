@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tpm_final_project/auth/api.dart';
-import 'package:tpm_final_project/views/auth/login.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -252,12 +251,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   backgroundColor: Colors.black12,
                   foregroundColor: Colors.black,
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
-                  );
-                },
+                onPressed: () => Navigator.pop(context),
                 child: const Text('Login'),
               ),
             ),
