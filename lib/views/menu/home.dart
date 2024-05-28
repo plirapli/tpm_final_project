@@ -1,6 +1,8 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:tpm_final_project/components/heading.dart';
+import 'package:tpm_final_project/utils/product.dart';
 
 class HomePage extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -11,7 +13,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String keyword = "";
+  bool _isDataLoaded = false;
+  int totalItems = 0;
+  int totalValue = 0;
+  String maxItem = "-";
+  Future? _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = _loadAll();
+  }
+
+  Future<List<Map<String, dynamic>>> _loadAll() async {
+    return await Future.wait([
+      ProductApi.getProductTotal(),
+      ProductApi.getProductTotalPrice(),
+      ProductApi.getMaxPriceProduct(),
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +44,44 @@ class _HomePageState extends State<HomePage> {
         ),
         // _mainmenu(context),
         const SizedBox(height: 16),
-        _overview(context),
+        FutureBuilder(
+          future: _future,
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if (snapshot.hasError) {
+              return _buildError(snapshot.error.toString());
+            } else if (snapshot.hasData) {
+              if (!_isDataLoaded) {
+                _isDataLoaded = true;
+                final bool isError = snapshot.data[0]["status"] == "Error" ||
+                    snapshot.data[1]["status"] == "Error" ||
+                    snapshot.data[2]["status"] == "Error";
+                if (isError) return _buildError(snapshot.data["message"]);
+
+                totalItems = int.parse(snapshot.data[0]["data"]);
+                totalValue = int.parse(snapshot.data[1]["data"]);
+                maxItem = snapshot.data[2]["data"]["name"];
+              }
+              return _overview(context);
+            }
+            return const Center(child: CircularProgressIndicator());
+          },
+        ),
         const SizedBox(height: 20)
       ],
+    );
+  }
+
+  Widget _buildError(String msg) {
+    return Container(
+      padding: const EdgeInsets.only(top: 4),
+      child: Text(
+        msg,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 
@@ -46,7 +101,7 @@ class _HomePageState extends State<HomePage> {
         _cardOverview(
           context,
           icon: Icons.local_shipping,
-          text: "5179",
+          text: totalItems.toString(),
           subtext: "Total Items",
           color: Colors.blue,
           subcolor: Colors.blue.shade50,
@@ -54,14 +109,14 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(height: 16),
         _cardValue(
           context,
-          text: "Rp12.560.000",
+          text: totalValue.toString(),
           subtext: "Total Value",
         ),
         const SizedBox(height: 16),
         _cardOverview(
           context,
           icon: Icons.attach_money,
-          text: "MacBook Pro M1",
+          text: maxItem,
           subtext: "Most Expensive Products",
           color: Colors.amber.shade700,
           subcolor: Colors.amber.shade50,
@@ -107,7 +162,7 @@ class _HomePageState extends State<HomePage> {
           Text(
             text,
             style: const TextStyle(
-              fontSize: 24,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -201,7 +256,7 @@ class _HomePageState extends State<HomePage> {
           Text(
             text,
             style: const TextStyle(
-              fontSize: 24,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
