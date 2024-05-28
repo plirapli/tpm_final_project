@@ -23,9 +23,9 @@ class MyTheme {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(6),
             ),
-            fixedSize: Size.fromHeight(44),
+            fixedSize: const Size.fromHeight(42),
             textStyle: const TextStyle(
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: FontWeight.w600,
             )),
       ),

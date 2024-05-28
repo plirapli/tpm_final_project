@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:tpm_final_project/models/app_menu.dart';
 import 'package:tpm_final_project/theme.dart';
+import 'package:tpm_final_project/views/menu/category.dart';
 import 'package:tpm_final_project/views/menu/home.dart';
 import 'package:tpm_final_project/views/menu/profile.dart';
 
@@ -18,7 +19,7 @@ class _AppPageState extends State<AppPage> {
   List<Widget> _widgetOptions(String token) {
     return [
       HomePage(data: JwtDecoder.decode(token)),
-      HomePage(data: JwtDecoder.decode(token)),
+      const CategoryPage(),
       ProfilePage(data: JwtDecoder.decode(token)),
     ];
   }

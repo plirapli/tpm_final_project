@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Armageddon',
       theme: MyTheme.myTheme(),
+      debugShowCheckedModeBanner: false,
       home: FutureBuilder<String?>(
         future: SessionManager.getCredential(),
         builder: (context, snapshot) {

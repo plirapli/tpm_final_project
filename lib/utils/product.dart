@@ -8,7 +8,9 @@ class ProductApi {
     'Content-Type': 'application/json; charset=UTF-8'
   };
 
-  static Future<List<dynamic>> getProductsByCategory(String categoryId) async {
+  static Future<Map<String, dynamic>> getProductsByCategory(
+    String categoryId,
+  ) async {
     final http.Response response = await http.get(
       Uri.parse("$baseUrl/category/$categoryId"),
     );

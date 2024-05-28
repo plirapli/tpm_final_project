@@ -55,7 +55,16 @@ class _HomePageState extends State<HomePage> {
           text: "Hello, ${widget.data["name"]}  👋🏻",
           subtext: "Welcome to Armageddon.",
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 14),
+        const Text(
+          "Overview",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color.fromARGB(255, 23, 47, 39),
+          ),
+        ),
+        const SizedBox(height: 6),
         FutureBuilder(
           future: _future,
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -92,15 +101,6 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
-          "Overview",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 23, 47, 39),
-          ),
-        ),
-        const SizedBox(height: 12),
         _cardOverview(
           context,
           icon: Icons.local_shipping,
