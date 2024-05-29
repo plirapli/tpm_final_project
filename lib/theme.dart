@@ -23,7 +23,7 @@ class MyTheme {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(6),
             ),
-            fixedSize: const Size.fromHeight(42),
+            // fixedSize: const Size.fromHeight(42),
             textStyle: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,

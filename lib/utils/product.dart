@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:tpm_final_project/auth/session.dart';
 import 'package:tpm_final_project/models/product.dart';
 
 class ProductApi {
@@ -63,7 +64,7 @@ class ProductApi {
     return jsonDecode(response.body);
   }
 
-  static Future<Map<String, dynamic>> editTodo(Product product) async {
+  static Future<Map<String, dynamic>> editProduct(Product product) async {
     final http.Response response = await http.put(
       Uri.parse("$baseUrl/${product.id}"),
       headers: headers,
@@ -77,8 +78,15 @@ class ProductApi {
     return jsonDecode(response.body);
   }
 
-  static Future<Map<String, dynamic>> deleteTodo(String id) async {
-    final http.Response response = await http.delete(Uri.parse("$baseUrl/$id"));
+  static Future<Map<String, dynamic>> deleteProduct(String id) async {
+    String? token = await SessionManager.getCredential();
+    final http.Response response = await http.delete(
+      Uri.parse("$baseUrl/$id"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token'
+      },
+    );
     return jsonDecode(response.body);
   }
 }

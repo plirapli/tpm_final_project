@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tpm_final_project/models/category.dart';
 import 'package:tpm_final_project/utils/category.dart';
 import 'package:tpm_final_project/views/product/view.dart';
-import 'package:tpm_final_project/views/profile/about_me.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
