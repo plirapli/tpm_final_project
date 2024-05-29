@@ -295,12 +295,20 @@ class _ProductViewPageState extends State<ProductViewPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        product.name!,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              product.name!,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text("x${product.qty}"),
+                        ],
                       ),
                       const SizedBox(height: 4),
                       Text(
