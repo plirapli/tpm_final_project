@@ -8,8 +8,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_native_splash: ^2.3.13
-  flutter_launcher_icons: ^0.13.1
   accordion: ^2.6.0
   cupertino_icons: ^1.0.6
   google_fonts: ^6.2.1
@@ -42,28 +40,3 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
-
-flutter_native_splash:
-  color: "#ffffff" # Background color of the splash screen
-  image: assets/logo_splash.jpg # Path to your splash screen image
-  android: true
-  ios: true
-  web: true
-
-flutter_launcher_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: "assets/logo.jpg"
-  min_sdk_android: 21 # android min sdk min:16, default 21
-  web:
-    generate: true
-    image_path: "assets/logo.jpg"
-    background_color: "#fffbff"
-    theme_color: "#fffbff"
-  windows:
-    generate: true
-    image_path: "assets/logo.jpg"
-    icon_size: 48 # min:48, max:256, default: 48
-  macos:
-    generate: true
-    image_path: "assets/logo.jpg"
