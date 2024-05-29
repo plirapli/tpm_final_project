@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tpm_final_project/models/category.dart';
 import 'package:tpm_final_project/utils/category.dart';
+import 'package:tpm_final_project/views/product/view.dart';
+import 'package:tpm_final_project/views/profile/about_me.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -54,9 +56,8 @@ class _CategoryPageState extends State<CategoryPage> {
         return _cardOverview(
           context,
           isLast,
+          categories[index],
           icon: Icons.local_shipping,
-          text: categories[index].name!,
-          subtext: "${categories[index].itemQty.toString()} items",
           color: Colors.blue,
           subcolor: Colors.blue.shade50,
         );
@@ -66,10 +67,9 @@ class _CategoryPageState extends State<CategoryPage> {
 
   Widget _cardOverview(
     BuildContext context,
-    bool isLast, {
+    bool isLast,
+    Category category, {
     IconData icon = Icons.flag,
-    String text = "Lorem",
-    String subtext = "Lorem Ipsum",
     Color color = Colors.black,
     Color subcolor = Colors.black12,
   }) {
@@ -78,7 +78,12 @@ class _CategoryPageState extends State<CategoryPage> {
       child: Material(
         child: InkWell(
           onTap: () {
-            print("asdasd");
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProductViewPage(category: category),
+              ),
+            );
           },
           child: Ink(
             decoration: BoxDecoration(
@@ -92,7 +97,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    text,
+                    category.name!,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -100,7 +105,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    subtext,
+                    "${category.itemQty.toString()} items",
                     style: const TextStyle(
                       fontSize: 14,
                       color: Color.fromARGB(128, 0, 0, 0),

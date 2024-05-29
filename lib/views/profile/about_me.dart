@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tpm_final_project/components/heading.dart';
 import 'package:tpm_final_project/models/member.dart';
 import 'package:url_launcher/url_launcher.dart';
 
