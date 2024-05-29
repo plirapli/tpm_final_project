@@ -53,6 +53,7 @@ class Product {
     price = json['price'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    categoryId = json['category_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -63,6 +64,7 @@ class Product {
     data['price'] = price;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
+    data['category_id'] = categoryId;
     return data;
   }
 }

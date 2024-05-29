@@ -9,6 +9,13 @@ class ProductApi {
     'Content-Type': 'application/json; charset=UTF-8'
   };
 
+  static Future<Map<String, dynamic>> getProductById(String id) async {
+    final http.Response response = await http.get(
+      Uri.parse("$baseUrl/id/$id"),
+    );
+    return jsonDecode(response.body);
+  }
+
   static Future<Map<String, dynamic>> getProductsByCategory(
     String categoryId,
   ) async {
@@ -52,9 +59,13 @@ class ProductApi {
     Product product,
     String categoryId,
   ) async {
+    String? token = await SessionManager.getCredential();
     final http.Response response = await http.post(
       Uri.parse("$baseUrl/$categoryId"),
-      headers: headers,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token'
+      },
       body: jsonEncode(<String, String>{
         'name': product.name!,
         'qty': product.qty!.toString(),
@@ -65,9 +76,13 @@ class ProductApi {
   }
 
   static Future<Map<String, dynamic>> editProduct(Product product) async {
+    String? token = await SessionManager.getCredential();
     final http.Response response = await http.put(
       Uri.parse("$baseUrl/${product.id}"),
-      headers: headers,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token'
+      },
       body: jsonEncode(<String, String>{
         'name': product.name!,
         'qty': product.qty.toString(),

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tpm_final_project/models/category.dart';
 import 'package:tpm_final_project/models/product.dart';
+import 'package:tpm_final_project/theme.dart';
 import 'package:tpm_final_project/utils/product.dart';
+import 'package:tpm_final_project/views/product/edit.dart';
 
 class ProductViewPage extends StatefulWidget {
   final Category category;
@@ -45,8 +47,8 @@ class _ProductViewPageState extends State<ProductViewPage> {
       child: Scaffold(
         appBar: AppBar(title: Text(widget.category.name!)),
         body: Container(
-          height: MediaQuery.of(context).size.height,
           padding: const EdgeInsets.symmetric(horizontal: 24),
+          color: MyTheme.bgColor,
           child: Column(children: [
             const SizedBox(height: 14),
             _searchBar(context),
@@ -332,24 +334,25 @@ class _ProductViewPageState extends State<ProductViewPage> {
                     Expanded(
                       child: TextButton(
                         onPressed: () async {
-                          // final result = await Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => EditPage(id: product.id!),
-                          //   ),
-                          // );
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ProductEditPage(id: product.id!),
+                            ),
+                          );
 
-                          // if (result != null) {
-                          //   if (!context.mounted) return;
-                          //   ScaffoldMessenger.of(context)
-                          //     ..removeCurrentSnackBar()
-                          //     ..showSnackBar(SnackBar(content: Text(result)));
-                          //   setState(() {});
-                          //   _future = ProductApi.getProductsByCategory(
-                          //       widget.category.id.toString());
-                          // }
+                          if (result != null) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context)
+                              ..removeCurrentSnackBar()
+                              ..showSnackBar(SnackBar(content: Text(result)));
+                            setState(() {});
+                            _future = ProductApi.getProductsByCategory(
+                                widget.category.id.toString());
+                          }
                         },
-                        child: const Text("Update"),
+                        child: const Text("Edit"),
                       ),
                     ),
                     const SizedBox(width: 12),

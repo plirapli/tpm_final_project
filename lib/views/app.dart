@@ -31,7 +31,7 @@ class _AppPageState extends State<AppPage> {
         appBar: AppBar(title: Text(navItem[_selectedIndex].label!)),
         body: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          color: MyTheme.bg,
+          color: MyTheme.bgColor,
           child: _widgetOptions(widget.token).elementAt(_selectedIndex),
         ),
         bottomNavigationBar: BottomNavigationBar(

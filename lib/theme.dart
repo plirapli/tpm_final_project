@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MyTheme {
-  static const bg = Color.fromARGB(255, 247, 248, 250);
+  static const bgColor = Color.fromARGB(255, 247, 248, 250);
+  static const secondaryColor = Color.fromARGB(255, 229, 229, 229);
+  static final Map<String, Color> errorColor = {
+    "bg": const Color.fromARGB(255, 255, 225, 230),
+    "normal": Colors.red.shade800
+  };
 
   static ThemeData myTheme() {
     return ThemeData(
