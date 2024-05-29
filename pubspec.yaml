@@ -18,6 +18,7 @@ dependencies:
   jwt_decoder: ^2.0.1
   shared_preferences: ^2.2.3
   url_launcher: ^6.2.5
+  instant: ^0.5.1
 
 dev_dependencies:
   flutter_test:

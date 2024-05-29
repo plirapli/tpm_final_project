@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:instant/instant.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:tpm_final_project/models/category.dart';
 import 'package:tpm_final_project/models/product.dart';
+import 'package:tpm_final_project/models/timezone.dart';
 import 'package:tpm_final_project/theme.dart';
 import 'package:tpm_final_project/utils/product.dart';
 import 'package:tpm_final_project/views/product/add.dart';
@@ -33,13 +36,12 @@ class _ProductViewPageState extends State<ProductViewPage> {
     "GBP": "£"
   };
   late String selectedCurrency = currencies.first;
-
-  final List<String> timezones = ['WIB', 'WITA', 'WIT', 'UTC'];
-  late String selectedTimezone = timezones.first;
+  late double selectedTimezone = myTimeZones.first.offset;
 
   @override
   void initState() {
     super.initState();
+    initializeDateFormatting();
     _future = ProductApi.getProductsByCategory(categoryId);
   }
 
@@ -173,25 +175,20 @@ class _ProductViewPageState extends State<ProductViewPage> {
                   border: Border.all(color: const Color.fromARGB(48, 0, 0, 0)),
                 ),
                 child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
+                  child: DropdownButton<double>(
                     value: selectedTimezone,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 2,
                     ),
-                    onChanged: (String? value) async {
-                      // var res = await CurrencyApi.convert(
-                      //   totalValueOriginal,
-                      //   currency: value!.toLowerCase(),
-                      // );
-                      // totalValue = res["data"] + 0.0;
+                    onChanged: (double? value) async {
                       setState(() => selectedTimezone = value!);
                     },
-                    items: timezones.map<DropdownMenuItem<String>>(
-                      (String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
+                    items: myTimeZones.map<DropdownMenuItem<double>>(
+                      (MyTimeZone timezone) {
+                        return DropdownMenuItem<double>(
+                          value: timezone.offset,
+                          child: Text(timezone.name),
                         );
                       },
                     ).toList(),
@@ -223,20 +220,6 @@ class _ProductViewPageState extends State<ProductViewPage> {
           }
           return const Center(child: CircularProgressIndicator());
         },
-      ),
-    );
-  }
-
-  Widget _error(String msg) {
-    return Container(
-      padding: const EdgeInsets.only(top: 4),
-      child: Text(
-        msg,
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
       ),
     );
   }
@@ -278,7 +261,8 @@ class _ProductViewPageState extends State<ProductViewPage> {
     bool isFirst,
     bool isLast,
   ) {
-    DateTime createdAt = DateTime.parse(product.createdAt!).toLocal();
+    DateTime createdAt = DateTime.parse(product.createdAt!);
+    createdAt = dateTimeToOffset(offset: selectedTimezone, datetime: createdAt);
     String formattedDate = DateFormat.yMEd().add_Hm().format(createdAt);
 
     return Container(
@@ -423,6 +407,20 @@ class _ProductViewPageState extends State<ProductViewPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _error(String msg) {
+    return Container(
+      padding: const EdgeInsets.only(top: 4),
+      child: Text(
+        msg,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
