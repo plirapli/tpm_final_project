@@ -6,6 +6,7 @@ import 'package:tpm_final_project/models/category.dart';
 import 'package:tpm_final_project/models/product.dart';
 import 'package:tpm_final_project/models/timezone.dart';
 import 'package:tpm_final_project/theme.dart';
+import 'package:tpm_final_project/utils/currency.dart';
 import 'package:tpm_final_project/utils/product.dart';
 import 'package:tpm_final_project/views/product/add.dart';
 import 'package:tpm_final_project/views/product/edit.dart';
@@ -38,6 +39,14 @@ class _ProductViewPageState extends State<ProductViewPage> {
   late String selectedCurrency = currencies.first;
   late double selectedTimezone = myTimeZones.first.offset;
 
+  Future<double> _convert(double value) async {
+    var res = await CurrencyApi.convert(
+      value,
+      currency: selectedCurrency.toLowerCase(),
+    );
+    return res["data"] + 0.0;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -47,11 +56,6 @@ class _ProductViewPageState extends State<ProductViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    NumberFormat currencyFormatter = NumberFormat.currency(
-      locale: 'id',
-      symbol: currencySymbol[selectedCurrency],
-    );
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(title: Text(widget.category.name!)),
@@ -143,11 +147,6 @@ class _ProductViewPageState extends State<ProductViewPage> {
                       vertical: 2,
                     ),
                     onChanged: (String? value) async {
-                      // var res = await CurrencyApi.convert(
-                      //   totalValueOriginal,
-                      //   currency: value!.toLowerCase(),
-                      // );
-                      // totalValue = res["data"] + 0.0;
                       setState(() => selectedCurrency = value!);
                     },
                     items: currencies.map<DropdownMenuItem<String>>(
@@ -249,165 +248,181 @@ class _ProductViewPageState extends State<ProductViewPage> {
               List<Product> list =
                   (keyword != "") ? filteredProduct : productList;
               bool isLast = list.last == productList[index];
-              bool isFirst = list.first == productList[index];
-              return _product(context, list[index], isFirst, isLast);
+
+              NumberFormat currFormat = NumberFormat.currency(
+                locale: 'id',
+                symbol: currencySymbol[selectedCurrency],
+              );
+
+              return _product(context, list[index], isLast, currFormat);
             },
           );
   }
 
-  Widget _product(
-    BuildContext context,
-    Product product,
-    bool isFirst,
-    bool isLast,
-  ) {
+  Widget _product(BuildContext context, Product product, bool isLast,
+      NumberFormat currencyFormatter) {
     DateTime createdAt = DateTime.parse(product.createdAt!);
     createdAt = dateTimeToOffset(offset: selectedTimezone, datetime: createdAt);
     String formattedDate = DateFormat.yMEd().add_Hm().format(createdAt);
 
-    return Container(
-      margin: EdgeInsets.fromLTRB(1, 14, 1, isLast ? 16 : 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.black12),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.25),
-                  blurRadius: 3,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
+    return FutureBuilder(
+      future: _convert(product.price! + 0.0),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text("Error: ${snapshot.error}");
+        } else if (snapshot.hasData) {
+          double convertedPrice = snapshot.data!;
+
+          return Container(
+            margin: EdgeInsets.fromLTRB(1, 14, 1, isLast ? 16 : 0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  product.name!,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                Container(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.black12),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.25),
+                        blurRadius: 3,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  product.price.toString(),
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Color.fromARGB(128, 0, 0, 0),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  formattedDate,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Color.fromARGB(128, 0, 0, 0),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextButton(
-                        onPressed: () async {
-                          final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ProductEditPage(id: product.id!),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.name!,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        currencyFormatter.format(convertedPrice),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Color.fromARGB(128, 0, 0, 0),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        formattedDate,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color.fromARGB(128, 0, 0, 0),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextButton(
+                              onPressed: () async {
+                                final result = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ProductEditPage(id: product.id!),
+                                  ),
+                                );
+
+                                if (result != null) {
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context)
+                                    ..removeCurrentSnackBar()
+                                    ..showSnackBar(
+                                        SnackBar(content: Text(result)));
+                                  setState(() {});
+                                  _future = ProductApi.getProductsByCategory(
+                                      categoryId);
+                                }
+                              },
+                              child: const Text("Edit"),
                             ),
-                          );
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: TextButton(
+                              onPressed: () async {
+                                final bool? shouldRefresh =
+                                    await showDialog<bool>(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text("Delete Product?"),
+                                      content: Text(
+                                          "Do you want to delete ${product.name}?"),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, false),
+                                          child: const Text("No"),
+                                        ),
+                                        TextButton(
+                                          style: TextButton.styleFrom(
+                                            backgroundColor: Colors.red.shade50,
+                                            foregroundColor: Colors.red,
+                                          ),
+                                          onPressed: () async {
+                                            final res =
+                                                await ProductApi.deleteProduct(
+                                              product.id.toString(),
+                                            );
 
-                          if (result != null) {
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context)
-                              ..removeCurrentSnackBar()
-                              ..showSnackBar(SnackBar(content: Text(result)));
-                            setState(() {});
-                            _future =
-                                ProductApi.getProductsByCategory(categoryId);
-                          }
-                        },
-                        child: const Text("Edit"),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: TextButton(
-                        onPressed: () async {
-                          final bool? shouldRefresh = await showDialog<bool>(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text("Delete Product?"),
-                                content: Text(
-                                    "Do you want to delete ${product.name}?"),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, false),
-                                    child: const Text("No"),
-                                  ),
-                                  TextButton(
-                                    style: TextButton.styleFrom(
-                                      backgroundColor: Colors.red.shade50,
-                                      foregroundColor: Colors.red,
-                                    ),
-                                    onPressed: () async {
-                                      final res =
-                                          await ProductApi.deleteProduct(
-                                        product.id.toString(),
-                                      );
+                                            if (!context.mounted) return;
+                                            Navigator.pop(context, true);
+                                            SnackBar snackBar = SnackBar(
+                                              content: Text(res["message"]),
+                                            );
+                                            ScaffoldMessenger.of(context)
+                                              ..removeCurrentSnackBar()
+                                              ..showSnackBar(snackBar);
+                                          },
+                                          child: const Text("Yes"),
+                                        ),
+                                      ],
+                                      backgroundColor: Colors.white,
+                                      surfaceTintColor: Colors.transparent,
+                                      shape: const RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          width: 2.5,
+                                          strokeAlign:
+                                              BorderSide.strokeAlignCenter,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
 
-                                      if (!context.mounted) return;
-                                      Navigator.pop(context, true);
-                                      SnackBar snackBar = SnackBar(
-                                        content: Text(res["message"]),
-                                      );
-                                      ScaffoldMessenger.of(context)
-                                        ..removeCurrentSnackBar()
-                                        ..showSnackBar(snackBar);
-                                    },
-                                    child: const Text("Yes"),
-                                  ),
-                                ],
-                                backgroundColor: Colors.white,
-                                surfaceTintColor: Colors.transparent,
-                                shape: const RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 2.5,
-                                    strokeAlign: BorderSide.strokeAlignCenter,
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-
-                          if (shouldRefresh!) {
-                            setState(() {});
-                            _future =
-                                ProductApi.getProductsByCategory(categoryId);
-                          }
-                        },
-                        style: TextButton.styleFrom(
-                            backgroundColor: Colors.red.shade50,
-                            foregroundColor: Colors.red),
-                        child: const Text("Delete"),
-                      ),
-                    )
-                  ],
-                )
+                                if (shouldRefresh!) {
+                                  setState(() {});
+                                  _future = ProductApi.getProductsByCategory(
+                                      categoryId);
+                                }
+                              },
+                              style: TextButton.styleFrom(
+                                  backgroundColor: Colors.red.shade50,
+                                  foregroundColor: Colors.red),
+                              child: const Text("Delete"),
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
-      ),
+          );
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
     );
   }
 
