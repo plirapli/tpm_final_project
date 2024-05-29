@@ -55,13 +55,10 @@ class ProductApi {
     return jsonDecode(response.body);
   }
 
-  static Future<Map<String, dynamic>> addProduct(
-    Product product,
-    String categoryId,
-  ) async {
+  static Future<Map<String, dynamic>> addProduct(Product product) async {
     String? token = await SessionManager.getCredential();
     final http.Response response = await http.post(
-      Uri.parse("$baseUrl/$categoryId"),
+      Uri.parse("$baseUrl/${product.categoryId}"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token'

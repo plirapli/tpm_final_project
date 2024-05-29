@@ -4,6 +4,7 @@ import 'package:tpm_final_project/models/category.dart';
 import 'package:tpm_final_project/models/product.dart';
 import 'package:tpm_final_project/theme.dart';
 import 'package:tpm_final_project/utils/product.dart';
+import 'package:tpm_final_project/views/product/add.dart';
 import 'package:tpm_final_project/views/product/edit.dart';
 
 class ProductViewPage extends StatefulWidget {
@@ -16,11 +17,11 @@ class ProductViewPage extends StatefulWidget {
 }
 
 class _ProductViewPageState extends State<ProductViewPage> {
+  late String categoryId = widget.category.id.toString();
   String keyword = "";
   Future? _future;
   List<Product> filteredProduct = [];
   List<Product> productList = [];
-  List<int> isExpanded = [];
 
   final List<String> currencies = ['IDR', 'USD', 'KRW', 'JPY', 'EUR', 'GBP'];
   final Map<String, String> currencySymbol = {
@@ -35,6 +36,12 @@ class _ProductViewPageState extends State<ProductViewPage> {
 
   final List<String> timezones = ['WIB', 'WITA', 'WIT', 'UTC'];
   late String selectedTimezone = timezones.first;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = ProductApi.getProductsByCategory(categoryId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,44 +62,35 @@ class _ProductViewPageState extends State<ProductViewPage> {
             _products(),
           ]),
         ),
-        // floatingActionButton: Container(
-        //   padding: const EdgeInsets.all(10),
-        //   child: FloatingActionButton(
-        //     onPressed: () async {
-        //       final result = await Navigator.push(
-        //         context,
-        //         MaterialPageRoute(builder: (context) => const AddPage()),
-        //       );
+        floatingActionButton: Container(
+          padding: const EdgeInsets.all(10),
+          child: FloatingActionButton(
+            onPressed: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductAddPage(
+                    categoryId: int.parse(categoryId),
+                  ),
+                ),
+              );
 
-        //       if (result != null) {
-        //         if (!context.mounted) return;
-        //         ScaffoldMessenger.of(context)
-        //           ..removeCurrentSnackBar()
-        //           ..showSnackBar(SnackBar(content: Text(result)));
-        //         setState(() {});
-        //         _future = TodoApi.getTodo();
-        //       }
-        //     },
-        //     foregroundColor: Colors.black,
-        //     backgroundColor: Colors.white,
-        //     shape: const RoundedRectangleBorder(
-        //       side: BorderSide(
-        //         width: 2.5,
-        //         strokeAlign: BorderSide.strokeAlignCenter,
-        //       ),
-        //     ),
-        //     elevation: 3,
-        //     child: const Icon(Icons.add, size: 32),
-        //   ),
-        // ),
+              if (result != null) {
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context)
+                  ..removeCurrentSnackBar()
+                  ..showSnackBar(SnackBar(content: Text(result)));
+                setState(() {});
+                _future = ProductApi.getProductsByCategory(categoryId);
+              }
+            },
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.black,
+            child: const Icon(Icons.add, size: 32),
+          ),
+        ),
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _future = ProductApi.getProductsByCategory(widget.category.id.toString());
   }
 
   void _search(String val) {
@@ -316,11 +314,11 @@ class _ProductViewPageState extends State<ProductViewPage> {
                 Text(
                   product.price.toString(),
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 18,
                     color: Color.fromARGB(128, 0, 0, 0),
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
                   formattedDate,
                   style: const TextStyle(
@@ -328,7 +326,7 @@ class _ProductViewPageState extends State<ProductViewPage> {
                     color: Color.fromARGB(128, 0, 0, 0),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 Row(
                   children: [
                     Expanded(
@@ -348,8 +346,8 @@ class _ProductViewPageState extends State<ProductViewPage> {
                               ..removeCurrentSnackBar()
                               ..showSnackBar(SnackBar(content: Text(result)));
                             setState(() {});
-                            _future = ProductApi.getProductsByCategory(
-                                widget.category.id.toString());
+                            _future =
+                                ProductApi.getProductsByCategory(categoryId);
                           }
                         },
                         child: const Text("Edit"),
@@ -409,9 +407,8 @@ class _ProductViewPageState extends State<ProductViewPage> {
 
                           if (shouldRefresh!) {
                             setState(() {});
-                            _future = ProductApi.getProductsByCategory(
-                              widget.category.id.toString(),
-                            );
+                            _future =
+                                ProductApi.getProductsByCategory(categoryId);
                           }
                         },
                         style: TextButton.styleFrom(
