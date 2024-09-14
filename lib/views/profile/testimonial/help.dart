@@ -39,13 +39,13 @@ class HelpPage extends StatelessWidget {
           sectionClosingHapticFeedback: SectionHapticFeedback.light,
           children: [
             AccordionSection(
-              leftIcon: const Icon(Icons.rocket_launch, color: Colors.white),
-              header: const Text('Kritik 🤔', style: headerStyle),
+              leftIcon: const Icon(Icons.favorite, color: Colors.white),
+              header: const Text('Kesan', style: headerStyle),
               content: const Column(children: [KritikContent()]),
             ),
             AccordionSection(
-              leftIcon: const Icon(Icons.pin_outlined, color: Colors.white),
-              header: const Text('Saran', style: headerStyle),
+              leftIcon: const Icon(Icons.mail, color: Colors.white),
+              header: const Text('Pesan', style: headerStyle),
               content: const Column(
                 children: [SaranContent()],
               ),

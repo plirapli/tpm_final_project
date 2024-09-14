@@ -7,6 +7,7 @@ class KritikContent extends StatelessWidget {
   static const List<String> textList = [
     "Kegiatan perkuliahan yang dilakukan selama ini telah berjalan lancar.",
     "Menurut saya, waktu yang diberikan untuk mengerjakan tugas terlalu sedikit.",
+    "kms."
   ];
 
   @override
@@ -18,7 +19,7 @@ class SaranContent extends StatelessWidget {
 
   static const List<String> textList = [
     "Sebaiknya waktu untuk mengerjakan tugas lebih diperpanjang lagi.",
-    "Sebaiknya UTS dan UAS diubah agar bersifat Open Book.",
+    "Semoga saya mendapatkan nilai terbaik."
   ];
 
   @override

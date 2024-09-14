@@ -24,10 +24,11 @@ class _ProductAddPageState extends State<ProductAddPage> {
   Future<void> _editHandler(BuildContext context) async {
     try {
       Product product = Product(
-          name: _name.text,
-          qty: int.parse(_qty.text),
-          price: int.parse(_price.text),
-          categoryId: widget.categoryId);
+        name: _name.text,
+        qty: int.parse(_qty.text),
+        price: int.parse(_price.text),
+        categoryId: widget.categoryId,
+      );
       final Map<String, dynamic> response =
           await ProductApi.addProduct(product);
       final status = response["status"];
